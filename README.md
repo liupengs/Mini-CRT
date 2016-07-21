@@ -1,6 +1,6 @@
 #Mini-Crt
 Introduction:
-This Mini-CRT (C runtime library) is a modified version of the code in the book <程序员的自我修养>.
+This Mini-CRT (C runtime library) is a modified version of the code in the book <绋嬪簭鍛樼殑鑷垜淇吇>.
 
 Environment
 Linux x86 or Windows
