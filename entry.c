@@ -5,8 +5,8 @@
 #include <Windows.h>
 #endif // WIN32
 
-extern int main(int argc, char *argv[]);
-void exit(int);
+extern int main(f_size argc, char *argv[]);
+void exit(f_size);
 
 static void crt_fatal_error(const char *msg)
 {
@@ -18,7 +18,7 @@ void mini_crt_entry(void)
 {
     int ret;
 
-    #ifdef WIN32
+#ifdef WIN32
         int flag = 0;
         int argc =0;
         char* argv[16];
@@ -39,18 +39,19 @@ void mini_crt_entry(void)
             }
             c1++;
         }
+#else
+    f_size argc;
+    char **argv;
+
+    char *ebp_reg = 0;
+    #ifdef X64
+    asm("movq %%rbp, %0 \n":"=r"(ebp_reg)); //__asm__¡¡__volatile__("Instruction List" : Output : Input : Clobber/Modify);
     #else // WIN32
-        int argc;
-        char **argv;
-
-        char *ebp_reg = 0;
-        asm("movl %%ebp, %0 \n":"=r"(ebp_reg)); //__asm__¡¡__volatile__("Instruction List" : Output : Input : Clobber/Modify);
-        argc = *(int*)(ebp_reg+4);
-        argv = (char **) (ebp_reg + 8);
-
-
+    asm("movl %%ebp, %0 \n":"=r"(ebp_reg));
     #endif
-
+    argc = *(f_size*)(ebp_reg+4);
+    argv = (char **) (ebp_reg + 8);
+#endif
     if(!mini_crt_heap_init())
         crt_fatal_error("heap initialize failed");
 
@@ -61,16 +62,22 @@ void mini_crt_entry(void)
     exit(ret);
 }
 
-void exit(int exitCode)
+void exit(f_size exitCode)
 {
     mini_crt_call_exit_routine();
     #ifdef WIN32
     ExitProcess(exitCode);
+    #elif X64
+    asm("movq %0, %%rbx \n\t"
+        "movq $1, %%rax \n\t"
+        "int $0x80 \n\t"
+        "hlt \n\t"::"m"(exitCode)
+    );
     #else
     asm("movl %0, %%ebx \n\t"
         "movl $1, %%eax \n\t"
         "int $0x80 \n\t"
         "hlt \n\t"::"m"(exitCode)
-        );
+    );
     #endif // WIN32
 }

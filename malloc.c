@@ -80,11 +80,19 @@ void* malloc( unsigned size)
 #ifndef WIN32
 static void* brk(void* end_data_segment){
     void *ret = 0;
+    #ifdef X64
+    asm("movq $45, %%rax \n\t"
+        "movq %1, %%rbx \n\t"
+        "int $0x80 \n\t"
+        "movq %%rax, %0 \n\t": "=r"(ret) : "m"(end_data_segment)
+        );
+    #else
     asm("movl $45, %%eax \n\t"
         "movl %1, %%ebx \n\t"
         "int $0x80 \n\t"
         "mov %%eax, %0 \n\t": "=r"(ret) : "m"(end_data_segment)
         );
+    #endif // X64
     return ret;
 }
 #endif // WIN32

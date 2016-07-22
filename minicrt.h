@@ -7,11 +7,15 @@ extern "C"{
 
 #ifdef X64
 typedef long f_size;
+typedef unsigned long u_f_size;
 typedef long FILE;
 #else
 typedef int f_size;
+typedef unsigned u_f_size;
 typedef int FILE;
 #endif
+
+#define WRITE_BUF_SIZE 4096
 
 //malloc
 #ifndef NULL
@@ -28,7 +32,7 @@ int mini_crt_heap_init();
 
 
 //string
-char* itoa(int n, char *str, int radix);
+char* itoa(f_size n, char *str, f_size radix);
 int strcmp(const char* src, const char *dst);
 char *strcpy(char *dest, const char *src);
 unsigned strlen(const char *str);
@@ -54,19 +58,21 @@ unsigned strlen(const char *str);
 
 int mini_crt_io_init();
 FILE *fopen(const char *filename, const char*mode);
-f_size fread(void* buffer, int size, int count, FILE *stream);
-f_size fwrite(const void* buffer, int size, int count, FILE *stream);
+f_size fread(void* buffer, f_size size, f_size count, FILE *stream);
+f_size fwrite(const void* buffer, f_size size, f_size count, FILE *stream);
 f_size fclose(FILE *fp);
-f_size fseek(FILE *fp, int offset, int set);
+f_size fseek(FILE *fp, f_size offset, f_size set);
 
-int fputc(int c, FILE *stream);
+
+
+int fputc(char c, FILE *stream);
 int fputs(const char *str, FILE *stream);
 int printf(const char *format, ...);
 int fprintf(FILE *stream, const char *format, ...);
 
 //internal
 void do_global_ctors();
-void min_crt_call_exit_routine();
+void mini_crt_call_exit_routine();
 
 //atexit
 typedef void(*atexit_func_t)(void);
