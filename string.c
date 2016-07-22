@@ -123,6 +123,8 @@ int strcpy_buf(FILE* stream, char *dest, const char *src, int lens, int *idx_siz
     return ret;
 }
 
+#define COMPARE_RESULT {if(t<0) return EOF; else ret+=t;}
+
 int vfprintf(FILE *stream, const char *format, va_list arglist)
 {
     int translating = 0;
@@ -143,10 +145,7 @@ int vfprintf(FILE *stream, const char *format, va_list arglist)
                 translating = 1;
             else{
                 t = strcpy_buf(stream, buf, p, 1, &now_idx, WRITE_BUF_SIZE-1);
-                if(t<0)
-                    return EOF;
-                else
-                    ret+=t;
+                COMPARE_RESULT
                 translating = 0;
             }
             break;
@@ -158,10 +157,7 @@ int vfprintf(FILE *stream, const char *format, va_list arglist)
             } else{
                 t = strcpy_buf(stream, buf, p, 1, &now_idx, WRITE_BUF_SIZE-1);
             }
-            if(t<0)
-                return EOF;
-            else
-                ret+=t;
+            COMPARE_RESULT
             break;
         case 's':
             if(translating)
@@ -173,19 +169,13 @@ int vfprintf(FILE *stream, const char *format, va_list arglist)
             else{
                 t = strcpy_buf(stream, buf, p, 1, &now_idx, WRITE_BUF_SIZE-1);
             }
-            if(t<0)
-                return EOF;
-            else
-                ret+=t;
+            COMPARE_RESULT
             break;
         default:
             t = strcpy_buf(stream, buf, p, 1, &now_idx, WRITE_BUF_SIZE-1);
             if(translating)
                 translating=0;
-            if(t<0)
-                return EOF;
-            else
-                ret+=t;
+            COMPARE_RESULT
             break;
         }
     }
