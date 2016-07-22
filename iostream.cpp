@@ -84,8 +84,4 @@ ofstream& ofstream::write(const char* buf, unsigned size)
     fwrite(buf, 1, size, fp);
     return *this;
 }
-
-
-
-
 }
