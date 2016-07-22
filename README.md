@@ -2,6 +2,7 @@
 Introduction:
 
 This Mini-CRT (C runtime library) is a modified version of the code in the book <程序员的自我修养>.
+
 当前支持64位的系统，在linux和windows下测试通过。
 
 Environment:
