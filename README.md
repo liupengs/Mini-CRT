@@ -7,13 +7,25 @@ This Mini-CRT (C runtime library) is a modified version of the code in the book 
 
 Environment:
 
-Linux x86 or Windows
+Linux or Windows
 
-In Linux:
+In Linux x86:
 
 gcc -c -fno-builtin -nostdlib -fno-stack-protector entry.c malloc.c stdio.c string.c atexit.c
 
 g++ -c -nostdinc++ -fno-rtti -fno-exceptions -fno-builtin -nostdlib -fno-stack-protector crtbegin.cpp crtend.cpp ctors.cpp new_delete.cpp  sysdep.cpp  iostream.cpp sysdep.cpp
+
+ar -rs minicrt.a  malloc.o stdio.o string.o ctors.o atexit.o iostream.o new_delete.o sysdep.o
+
+g++ -c -nostdinc++ -fno-rtti -fno-exceptions -fno-builtin -nostdlib -fno-stack-protector test.cpp
+
+ld -static -e mini_crt_entry entry.o crtbegin.o test.o minicrt.a crtend.o -o test
+
+In Linux x64:
+
+gcc -c -fno-builtin -nostdlib -fno-stack-protector entry.c malloc.c stdio.c string.c atexit.c -DX64
+
+g++ -c -nostdinc++ -fno-rtti -fno-exceptions -fno-builtin -nostdlib -fno-stack-protector crtbegin.cpp crtend.cpp ctors.cpp new_delete.cpp  sysdep.cpp  iostream.cpp sysdep.cpp -DX64
 
 ar -rs minicrt.a  malloc.o stdio.o string.o ctors.o atexit.o iostream.o new_delete.o sysdep.o
 
